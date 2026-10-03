@@ -10,7 +10,6 @@
  * - Clean brand typography and custom icon badge
  */
 
-import React from 'react';
 import { Wallet, Plus } from 'lucide-react';
 import { useAppDispatch } from '@/lib/redux/hooks';
 import { openAddModal } from '@/lib/redux/slices/expenseSlice';
