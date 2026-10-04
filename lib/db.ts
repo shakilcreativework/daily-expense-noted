@@ -14,7 +14,7 @@
  */
 
 import mongoose from 'mongoose';
-import dns from 'dns';
+import dns from 'node:dns';
 
 // Fix for Windows and local network/ISP DNS blocking MongoDB SRV queries
 if (typeof dns.setServers === 'function') {
@@ -61,6 +61,15 @@ export async function connectDB(): Promise<typeof mongoose> {
   // 1. If connection already established, return cached connection immediately
   if (cached.conn) {
     return cached.conn;
+  }
+
+  // Ensure public DNS resolver is used to prevent querySrv ECONNREFUSED on local networks
+  if (typeof dns.setServers === 'function') {
+    try {
+      dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+    } catch {
+      // Ignore if not permitted
+    }
   }
 
   // 2. If no connection promise is currently in-flight, initialize connection
